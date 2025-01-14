@@ -1,6 +1,31 @@
 import sys
 from collections import defaultdict, deque
 
+'''
+1)sys.setrecursionlimit: Diese Funktion setzt das maximale Rekursionslimit in Python. 
+Das Rekursionslimit gibt an, wie tief rekursive Funktionsaufrufe verschachtelt sein dürfen, 
+bevor Python einen RecursionError auslöst. 
+1 << 25: Dies ist eine bitweise Verschiebung nach links. 1 << 25 bedeutet 2^25 also 33.554.432. 
+Das Rekursionslimit wird auf diesen Wert gesetzt.
+Bei sehr großen Bäumen (z.B.n=100.000) kann die Rekursionstiefe der DFS sehr groß werden. 
+2)input = sys.stdin.read:
+sys.stdin.read ist eine Funktion, die die gesamte Eingabe von der Standardeingabe (stdin) als einen einzigen String liest.
+Durch input = sys.stdin.read wird die Funktion sys.stdin.read der Variablen input zugewiesen. 
+Das bedeutet, dass input() jetzt die gesamte Eingabe auf einmal liest.
+data = input().split(): input() ruft die Funktion sys.stdin.read auf und liest die gesamte Eingabe als einen String.
+.split() teilt diesen String an Leerzeichen (oder anderen Whitespace-Zeichen) und gibt eine Liste von Teilstrings zurück.
+
+Beispiel: Angenommen, die Eingabe ist:
+5 1
+1 1 0 0 0
+1 2
+1 3
+2 4
+2 5
+input(): Liest die gesamte Eingabe als einen String: "5 1\n1 1 0 0 0\n1 2\n1 3\n2 4\n2 5"
+.split(): Teilt den String an Leerzeichen und Zeilenumbrüchen und gibt eine Liste zurück:
+['5', '1', '1', '1', '0', '0', '0', '1', '2', '1', '3', '2', '4', '2', '5']
+'''
 def main():
     sys.setrecursionlimit(1 << 25)  # Erhöhe das Rekursionslimit (falls noch benötigt)
     input = sys.stdin.read  # Schnellere Eingabe
@@ -12,6 +37,24 @@ def main():
     a = list(map(int, data[2:2 + n]))  # Liste der Katzen
     
     # Adjazenzliste erstellen
+    '''
+    Iteration 1:
+    x = int(data[7]) = 1
+    y = int(data[8]) = 2
+    adj[1].append(2) → adj = {1: [2]}
+    adj[2].append(1) → adj = {1: [2], 2: [1]}
+    index += 2 → index = 9
+    ......
+    Ergibnis
+    adj = {
+    1: [2, 3],
+    2: [1, 4, 5],
+    3: [1],
+    4: [2],
+    5: [2]
+}
+
+    '''
     adj = defaultdict(list)
     index = 2 + n
     for _ in range(n - 1):
@@ -22,6 +65,16 @@ def main():
         index += 2
     
     # Iterative DFS-Funktion
+    '''
+    stack: Ein Stack, der Tupel speichert. Jedes Tupel enthält:
+    node: Der aktuelle Knoten.
+    parent: Der Elternknoten des aktuellen Knotens (um Zyklen zu vermeiden).
+    consecutive_cats: Die Anzahl der aufeinanderfolgenden Katzen auf dem aktuellen Pfad.
+    count: Zählt die Anzahl der gültigen Blattknoten (Restaurants).
+    Ergebnis:
+    Der Stack wird mit dem Startknoten (start), einem Elternknoten von -1 (da die Wurzel keinen Eltern hat) 
+    und consecutive_cats = 0 initialisiert.
+    '''
     def iterative_dfs(start):
         stack = [(start, -1, 0)]  # (node, parent, consecutive_cats)
         count = 0
