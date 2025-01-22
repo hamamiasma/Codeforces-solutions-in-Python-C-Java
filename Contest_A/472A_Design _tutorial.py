@@ -8,6 +8,8 @@ def is_composite(num):
     """Überprüft, ob eine Zahl zusammengesetzt ist."""
     if num < 2:
         return False
+    # Wenn eine Zahl num zusammengesetzt ist, dann hat sie mindestens einen Teiler, der kleiner oder gleich der Quadratwurzel von num ist.
+    # num**0.5 berechnet die Quadratwurzel von num.
     for i in range(2, int(num**0.5) + 1):
         if num % i == 0:
             return True
